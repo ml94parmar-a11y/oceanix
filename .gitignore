@@ -1,0 +1,53 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+*.pot
+*.sqlite3
+db.sqlite3
+db.sqlite3-journal
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+*.egg
+pip-wheel-metadata/
+
+# Local env files
+.env
+*.env
+
+# JetBrains IDEs
+.idea/
+
+# Static assets
+staticfiles/
+
+# Test / coverage
+.pytest_cache/
+.coverage
+
+# Logs
+*.log
+
+# System files
+*~
