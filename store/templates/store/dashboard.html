@@ -1,0 +1,23 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Dashboard | Oceanix{% endblock %}
+
+{% block content %}
+<div class="section-card">
+    <h2>Customer Dashboard</h2>
+    <p>Welcome back, {{ user.username }}. Browse featured products, track your preferences, and use our chatbot for help.</p>
+    <div class="products-grid">
+        {% for review in user.review_set.all|slice:':3' %}
+            <div class="card">
+                <img src="{{ MEDIA_URL }}{{ review.product.image }}" alt="{{ review.product.name }}">
+                <div class="card-body">
+                    <h3>{{ review.product.name }}</h3>
+                    <p>Review: {{ review.comment|truncatechars:60 }}</p>
+                </div>
+            </div>
+        {% empty %}
+            <p>You have not posted any reviews yet. Explore products to start reviewing!</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

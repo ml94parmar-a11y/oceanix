@@ -1,0 +1,31 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Order Confirmed | Oceanix{% endblock %}
+
+{% block content %}
+<div class="section-card">
+    <h2>Order Confirmed</h2>
+    <p>Thank you, {{ order.full_name }}. Your payment has been received and your order is confirmed.</p>
+    <div class="section-card">
+        <h3>Invoice</h3>
+        <p><strong>Order #</strong> {{ order.id }}</p>
+        <p><strong>Amount Paid:</strong> ₹{{ order.amount }}</p>
+        <p><strong>Status:</strong> {{ order.get_status_display }}</p>
+        <p><strong>Payment ID:</strong> {{ order.razorpay_payment_id }}</p>
+        <p><strong>Email:</strong> {{ order.email }}</p>
+        <p><strong>Phone:</strong> {{ order.phone }}</p>
+        <p><strong>Shipping Address:</strong> {{ order.address }}</p>
+    </div>
+    <div class="section-card">
+        <h3>Order Items</h3>
+        {% for item in order.items.all %}
+            <div class="review-item">
+                <p><strong>{{ item.product.name }}</strong> x {{ item.quantity }}</p>
+                <p>₹{{ item.total_price }}</p>
+            </div>
+        {% endfor %}
+    </div>
+    <a href="{% url 'home' %}" class="button-secondary">Continue Shopping</a>
+    <a href="{% url 'order_detail' order.id %}" class="button-primary">View Order Details</a>
+</div>
+{% endblock %}

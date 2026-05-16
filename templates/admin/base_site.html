@@ -1,0 +1,24 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Oceanix Admin Lite{% endblock %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static 'admin/css/admin_lite.css' %}">
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Oceanix Admin Lite</a></h1>
+<p class="subtitle">A lightweight admin interface for Oceanix product and order management.</p>
+{% endblock %}
+
+{% block nav-global %}
+<nav class="nav-global">
+    <ul>
+        <li><a href="{% url 'admin:index' %}">Dashboard</a></li>
+        <li><a href="{% url 'admin:app_list' app_label='store' %}">Store</a></li>
+        <li><a href="{% url 'admin:logout' %}">Logout</a></li>
+    </ul>
+</nav>
+{% endblock %}

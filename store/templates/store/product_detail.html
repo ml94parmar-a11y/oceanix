@@ -1,0 +1,108 @@
+{% extends 'store/base.html' %}
+
+{% block title %}{{ product.name }} | Oceanix{% endblock %}
+
+{% block content %}
+<div class="section-card product-detail">
+    <div>
+        <img src="{{ MEDIA_URL }}{{ product.image }}" alt="{{ product.name }}">
+    </div>
+    <div class="product-meta">
+        <span class="badge">Rated {{ product.avg_rating }} / 5</span>
+        <h2>{{ product.name }}</h2>
+        <p style="font-size: 1.25rem; color: #00a699; font-weight: 700; margin-bottom: 16px;">₹{{ product.price }}</p>
+        <div class="product-description" style="margin: 24px 0; font-size: 1.1rem; line-height: 1.8; color: #333;">
+            {{ product.description|linebreaks }}
+        </div>
+        <p style="color: #666; font-size: 0.95rem;"><strong>AI Reference:</strong> {{ product.ai_reference }}</p>
+        <form method="post" action="{% url 'add_to_cart' product.slug %}" class="form-card" style="margin-top: 18px;">
+            {% csrf_token %}
+            <label>Quantity</label>
+            <input type="number" name="quantity" value="1" min="1" class="input-field" style="width: 100px;">
+            {% if user.is_authenticated %}
+                <button class="button-primary" type="submit">Add to Cart</button>
+            {% else %}
+                <p>Please <a href="{% url 'login' %}">log in</a> to add items to your cart.</p>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+<div class="section-card tabs-card">
+    <div class="tabs">
+        <button class="tab-button active" data-tab="reviews">Reviews</button>
+        <button class="tab-button" data-tab="comparison">Price + AI</button>
+        <button class="tab-button" data-tab="invoice">Order Info</button>
+    </div>
+    <div class="tab-content active" id="reviews">
+        <h3>Customer Reviews</h3>
+        {% for review in reviews %}
+            <div class="review-item">
+                <h4>{{ review.user.username }} · {{ review.rating }} ⭐</h4>
+                <p>{{ review.comment }}</p>
+                <small>{{ review.created_at|date:'F j, Y' }}</small>
+            </div>
+        {% empty %}
+            <p>No reviews yet. Be the first to share your experience.</p>
+        {% endfor %}
+    </div>
+    <div class="tab-content" id="comparison">
+        <h3>AI Reference & Price Comparison</h3>
+        <p>{{ product.ai_reference }}</p>
+        <div class="compare-table section-card">
+            <h4>Price Comparison</h4>
+            <table style="width:100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th style="text-align:left; padding: 12px; border-bottom: 1px solid #e2e8ec;">Seller</th>
+                        <th style="text-align:left; padding: 12px; border-bottom: 1px solid #e2e8ec;">Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for seller, price in product.competitor_info.items %}
+                        <tr>
+                            <td style="padding: 14px 12px;">{{ seller }}</td>
+                            <td style="padding: 14px 12px;">{{ price }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="tab-content" id="invoice">
+        <h3>What You Get</h3>
+        <p>Detailed billing, secure checkout, and live WhatsApp support make this product easy to order.</p>
+        <p><strong>Order process:</strong> Add to cart → Checkout → Razorpay payment → Invoice generated automatically.</p>
+    </div>
+</div>
+
+<div class="section-card">
+    <h3>Leave a Review</h3>
+    {% if user.is_authenticated %}
+        <form method="post" class="form-card">
+            {% csrf_token %}
+            {{ review_form.rating }}
+            {{ review_form.comment }}
+            <button type="submit" class="button-primary">Submit Review</button>
+        </form>
+    {% else %}
+        <p>Please <a href="{% url 'login' %}">log in</a> to post a review.</p>
+    {% endif %}
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.tab-button');
+        const panels = document.querySelectorAll('.tab-content');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                buttons.forEach(btn => btn.classList.remove('active'));
+                panels.forEach(panel => panel.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

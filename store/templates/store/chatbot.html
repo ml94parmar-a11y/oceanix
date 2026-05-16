@@ -1,0 +1,103 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Chatbot | Oceanix{% endblock %}
+
+{% block content %}
+<div class="section-card" style="max-width:900px; margin:auto;">
+    <h2>{{ site_config.site_name|default:'Oceanix' }} Chatbot</h2>
+    <p>Ask me anything about our products, pricing, orders, or get in touch via WhatsApp.</p>
+    <div id="chat-messages" style="background:#f4f7f2; border-radius:18px; padding:18px; min-height:400px; max-height:500px; overflow-y:auto; margin-bottom:16px; display:flex; flex-direction:column; gap:12px;"></div>
+    <form id="chat-form" class="form-card" style="display:flex; gap:12px;">
+        <input id="chat-input" class="input-field" type="text" placeholder="Ask about products, delivery, pricing..." autocomplete="off" style="flex:1;">
+        <button type="submit" class="button-primary" style="min-width:120px;">Send</button>
+    </form>
+    <p style="text-align:center; color:#566574; font-size:0.9rem; margin-top:12px;">For direct assistance, click the WhatsApp button or call our support team.</p>
+</div>
+
+<script>
+    const productsData = JSON.parse(`{{ products_json|escapejs }}`);
+    const whatsappContact = '{{ WHATSAPP_CONTACT }}';
+    const siteName = '{{ site_config.site_name|default:"Oceanix" }}';
+
+    const chatForm = document.querySelector('#chat-form');
+    const chatInput = document.querySelector('#chat-input');
+    const chatMessages = document.querySelector('#chat-messages');
+
+    function addMessage(sender, text, isHtml = false) {
+        const message = document.createElement('div');
+        message.className = `chat-message ${sender}`;
+        message.style.cssText = `
+            padding: 12px 14px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+            ${sender === 'user' ? 'background: #197b27; color: #fff; align-self: flex-end;' : 'background: #fff; color: #2c3e50; align-self: flex-start; border: 1px solid #e2e8ec;'}
+        `;
+        if (isHtml) {
+            message.innerHTML = text;
+        } else {
+            message.textContent = text;
+        }
+        chatMessages.appendChild(message);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function findProductResponse(text) {
+        const lower = text.toLowerCase();
+        let matches = [];
+        for (const prod of productsData) {
+            if (lower.includes(prod.name.toLowerCase()) || lower.includes(prod.slug)) {
+                matches.push(prod);
+            }
+        }
+        if (matches.length > 0) {
+            const product = matches[0];
+            const whatsappUrl = whatsappContact + `%20Product:%20${product.name}%20%E2%82%B9${product.price}`;
+            return `<strong>${product.name}</strong><br/>Price: ₹${product.price}<br/>Rating: ${product.avg_rating}⭐<br/>${product.ai_reference}<br/><a href="${whatsappUrl}" target="_blank" class="button-primary" style="display:inline-block; margin-top:8px; padding:8px 12px;">Chat on WhatsApp</a>`;
+        }
+        return null;
+    }
+
+    function generateResponse(text) {
+        const lower = text.toLowerCase();
+        const productResponse = findProductResponse(text);
+        if (productResponse) return productResponse;
+
+        const responses = {
+            'price|cost|how much': `Our products range from ₹499 to ₹1499. All include <a href="${whatsappContact}" target="_blank" style="color:#197b27;">WhatsApp support</a>.`,
+            'delivery|shipping|when|arrive': 'We deliver within 2-4 business days. Express delivery available via WhatsApp support.',
+            'ai|smart|recommendation': 'Each product includes AI-based care guidance for optimal plant growth.',
+            'return|refund|exchange': `We have a hassle-free return policy. Contact us on <a href="${whatsappContact}" target="_blank" style="color:#197b27;">WhatsApp</a> within 7 days.`,
+            'payment|razorpay|secure': 'We use Razorpay for secure payments. All transactions are encrypted.',
+            'review|rating|experience': 'Check customer reviews on each product page. Your feedback helps us improve!',
+            'support|help|issue': `Need help? <a href="${whatsappContact}" target="_blank" style="color:#197b27;">Message us on WhatsApp</a> or browse our <a href="/home/" style="color:#197b27;">products</a>.`,
+            'hello|hi|hey': `Hello! Welcome to ${siteName}. How can I help you today? Ask about our plants, pricing, delivery, or anything else!`,
+        };
+
+        for (const [key, response] of Object.entries(responses)) {
+            const keywords = key.split('|');
+            if (keywords.some(keyword => lower.includes(keyword))) {
+                return response;
+            }
+        }
+        return `Thanks for your question! Browse our <a href="/home/" style="color:#197b27;">product collection</a> or <a href="${whatsappContact}" target="_blank" style="color:#197b27;">chat with us on WhatsApp</a> for personalized help.`;
+    }
+
+    chatForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        const input = chatInput.value.trim();
+        if (!input) return;
+        addMessage('user', input);
+        chatInput.value = '';
+        setTimeout(function () {
+            const response = generateResponse(input);
+            addMessage('bot', response, true);
+        }, 500);
+    });
+
+    // Initial greeting
+    setTimeout(() => {
+        addMessage('bot', `Hi! 👋 I'm the ${siteName} chatbot. Ask me about our products, pricing, delivery, or type "help" for more options!`);
+    }, 300);
+</script>
+{% endblock %}

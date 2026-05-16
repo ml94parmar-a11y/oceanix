@@ -1,0 +1,166 @@
+:root {
+    --primary: #197b27;
+    --secondary: #f6f9f4;
+    --surface: #ffffff;
+    --surface-muted: #f7faf6;
+    --text: #1a2e2b;
+    --text-muted: #5f6d6a;
+    --border: #e6ece3;
+}
+
+body {
+    background: linear-gradient(180deg, #eef6ec 0%, #ffffff 100%);
+    color: var(--text);
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+#header, .module-caption, .breadcrumbs, .submit-row, #footer {
+    font-family: Inter, sans-serif;
+}
+
+#header {
+    background: #ffffff;
+    border-bottom: 1px solid rgba(25, 123, 39, 0.12);
+    box-shadow: 0 10px 30px rgba(33, 85, 43, 0.05);
+}
+
+#branding {
+    padding: 26px 24px;
+}
+
+#site-name a {
+    color: var(--primary);
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.subtitle {
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-size: 0.95rem;
+}
+
+#user-tools a, .nav-global a {
+    color: var(--primary);
+}
+
+#content-main {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(25, 123, 39, 0.08);
+    padding: 28px;
+}
+
+.dashboard-module, .module {
+    border-radius: 18px;
+    border: 1px solid rgba(25, 123, 39, 0.10);
+    background: var(--surface-muted);
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6);
+}
+
+.module caption, .dashboard-module caption {
+    font-size: 1rem;
+    color: var(--primary);
+    font-weight: 700;
+}
+
+.app-list th {
+    color: var(--text);
+}
+
+.button, input[type="submit"], .submit-row input[type="submit"] {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 999px;
+    border: none;
+    padding: 0.8rem 1.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    box-shadow: 0 10px 25px rgba(25, 123, 39, 0.14);
+}
+
+.button:hover, input[type="submit"]:hover, .submit-row input[type="submit"]:hover {
+    background: #145b1f;
+}
+
+#content-main .module, #content-main .adminform {
+    background: var(--surface);
+}
+
+fieldset.module, .inline-group, .grp-collapse, .grp-banded, .bordered {
+    border-radius: 16px;
+    border: 1px solid rgba(25, 123, 39, 0.12);
+    padding: 1.2rem 1.4rem;
+}
+
+.field-box {
+    background: #fbfdf9;
+    border-radius: 14px;
+    padding: 0.9rem;
+    border: 1px solid rgba(25, 123, 39, 0.10);
+}
+
+section#content-main p, .module caption {
+    color: var(--text-muted);
+}
+
+#content h1, h2, .model-name {
+    color: var(--text);
+}
+
+#content-main h1 {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+}
+
+#header .nav-global ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 16px;
+}
+
+#header .nav-global ul li {
+    display: inline-block;
+}
+
+#content-main .module .action-toggle, .grp-collapse, .grp-open .grp-collapse, .related-widget-wrapper, .suit-tab-bar {
+    border-radius: 12px;
+}
+
+.admin-login-card {
+    max-width: 520px;
+    margin: 3rem auto;
+    background: rgba(255,255,255,0.92);
+    border: 1px solid rgba(25, 123, 39, 0.12);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 40px rgba(25, 123, 39, 0.12);
+}
+
+.admin-login-card .login-branding h1 {
+    margin: 0 0 0.5rem;
+    font-size: 2rem;
+    color: var(--primary);
+}
+
+.admin-login-card .login-branding p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+#login-form {
+    background: transparent;
+    box-shadow: none;
+}
+
+#login-form .submit-row {
+    margin-top: 1.4rem;
+}
+
+#footer {
+    display: none;
+}

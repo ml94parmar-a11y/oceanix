@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Oceanix - Premium Plant Shopping{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="container">
+            <div class="location-info">
+                <i class="fas fa-map-marker-alt"></i>
+                <div>
+                    <p class="delivering-text">Delivering to Your Area</p>
+                    <p class="location-name">Update Location</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="header-left">
+                <a href="{% url 'home' %}" class="logo-link">
+                    <div class="logo-container">
+                        <img src="{{ LOGO_URL_PATH }}" alt="Oceanix logo" class="logo-image">
+                    </div>
+                    <div class="brand-info">
+                        <strong class="brand-name">{{ site_config.site_name|default:'Oceanix' }}</strong>
+                        <span class="brand-tagline">Shop Premium Plants</span>
+                    </div>
+                </a>
+            </div>
+
+            <div class="search-container">
+                <form method="get" action="{% url 'home' %}" class="search-form">
+                    <select name="category" class="search-category" title="All Categories">
+                        <option value="">All</option>
+                        <option value="Kitchen" {% if current_category == 'Kitchen' %}selected{% endif %}>Kitchen</option>
+                        <option value="Bathroom" {% if current_category == 'Bathroom' %}selected{% endif %}>Bathroom</option>
+                        <option value="Halls" {% if current_category == 'Halls' %}selected{% endif %}>Halls</option>
+                        <option value="Rooms" {% if current_category == 'Rooms' %}selected{% endif %}>Rooms</option>
+                        <option value="Bedrooms" {% if current_category == 'Bedrooms' %}selected{% endif %}>Bedrooms</option>
+                        <option value="Occasions" {% if current_category == 'Occasions' %}selected{% endif %}>Occasions</option>
+                        <option value="Others" {% if current_category == 'Others' %}selected{% endif %}>Others</option>
+                    </select>
+                    <input type="text" name="q" class="search-input" placeholder="Search for products..." value="{{ query }}">
+                    <button type="submit" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
+
+            <div class="header-right">
+                <div class="language-selector">
+                    <i class="fas fa-globe"></i> EN
+                </div>
+                <div class="account-menu">
+                    <i class="fas fa-user-circle"></i>
+                    {% if user.is_authenticated %}
+                        <span class="hello-text">Hello, {{ user.first_name|default:user.username }}</span>
+                    {% else %}
+                        <span class="hello-text">Hello, Guest</span>
+                    {% endif %}
+                    <p class="account-link">Account & Lists</p>
+                </div>
+                <a href="{% url 'cart' %}" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-text">Cart</span>
+                    {% if cart_count %}<span class="cart-count">{{ cart_count }}</span>{% endif %}
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fas fa-bars"></i> Menu
+            </button>
+            <div class="nav-links" id="nav-menu">
+                <a href="{% url 'home' %}" class="nav-link">Shop All</a>
+                <a href="{% url 'home' %}?category=Kitchen" class="nav-link">Kitchen</a>
+                <a href="{% url 'home' %}?category=Bathroom" class="nav-link">Bathroom</a>
+                <a href="{% url 'home' %}?category=Halls" class="nav-link">Halls</a>
+                <a href="{% url 'home' %}?category=Rooms" class="nav-link">Rooms</a>
+                <a href="{% url 'home' %}?category=Bedrooms" class="nav-link">Bedrooms</a>
+                <a href="{% url 'home' %}?category=Occasions" class="nav-link">Occasions</a>
+                <a href="#" class="nav-link">Today's Deals</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'order_history' %}" class="nav-link">My Orders</a>
+                    {% if user.is_staff %}<a href="{% url 'admin_dashboard' %}" class="nav-link nav-admin">Admin</a>{% endif %}
+                {% endif %}
+            </div>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="nav-link logout-link">Logout</a>
+            {% else %}
+                <div class="nav-auth">
+                    <a href="{% url 'login' %}" class="nav-link">Sign In</a>
+                    <a href="{% url 'register' %}" class="nav-link">Register</a>
+                </div>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-sections">
+                <div class="footer-column">
+                    <h5>Get to Know Us</h5>
+                    <ul>
+                        <li><a href="#">About Oceanix</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press Releases</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h5>Connect With Us</h5>
+                    <ul>
+                        <li><a href="#">Facebook</a></li>
+                        <li><a href="#">Twitter</a></li>
+                        <li><a href="#">Instagram</a></li>
+                        <li><a href="{{ WHATSAPP_CONTACT }}" target="_blank">WhatsApp Support</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h5>Make Money with Us</h5>
+                    <ul>
+                        <li><a href="#">Sell on Oceanix</a></li>
+                        <li><a href="#">Become an Affiliate</a></li>
+                        <li><a href="#">Partner Program</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h5>Help</h5>
+                    <ul>
+                        <li><a href="#">Customer Service</a></li>
+                        <li><a href="#">Track Order</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Oceanix E-Commerce. All rights reserved. Premium plant shopping made easy with AI recommendations.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('nav-menu').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

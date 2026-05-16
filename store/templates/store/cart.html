@@ -1,0 +1,37 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Cart | Oceanix{% endblock %}
+
+{% block content %}
+<div class="section-card">
+    <h2>Your Cart</h2>
+    {% if cart_items %}
+        <form method="post" action="{% url 'update_cart' %}" class="form-card">
+            {% csrf_token %}
+            {% for item in cart_items %}
+                <div class="review-item">
+                    <div style="display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px;">
+                        <div>
+                            <h3>{{ item.product.name }}</h3>
+                            <p>Price: ₹{{ item.product.price }} · Subtotal: ₹{{ item.total_price }}</p>
+                        </div>
+                        <div>
+                            <label>Quantity</label>
+                            <input type="number" name="quantity_{{ item.id }}" value="{{ item.quantity }}" min="1" class="input-field" style="width:100px;">
+                            <button name="remove_id" value="{{ item.id }}" class="button-secondary" style="margin-top:10px;">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <button class="button-primary" type="submit">Update Cart</button>
+        </form>
+        <div class="section-card" style="margin-top: 24px;">
+            <h3>Cart Total</h3>
+            <p><strong>₹{{ total }}</strong></p>
+            <a href="{% url 'checkout' %}" class="button-primary">Proceed to Checkout</a>
+        </div>
+    {% else %}
+        <p>Your cart is empty. Browse our <a href="{% url 'home' %}">products</a> to add items.</p>
+    {% endif %}
+</div>
+{% endblock %}

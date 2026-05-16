@@ -1,0 +1,23 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Register | Oceanix{% endblock %}
+
+{% block content %}
+<div class="section-card" style="max-width:520px; margin:auto;">
+    <h2>Create Your Oceanix Account</h2>
+    <form method="post" class="form-card">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <label>Username</label>
+        {{ form.username }}
+        <label>Email</label>
+        {{ form.email }}
+        <label>Password</label>
+        {{ form.password1 }}
+        <label>Confirm password</label>
+        {{ form.password2 }}
+        <button class="button-primary" type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+{% endblock %}

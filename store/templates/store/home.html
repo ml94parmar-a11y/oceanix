@@ -1,0 +1,49 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Shop Plants | Oceanix{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <h1>Shop Top Plant Picks</h1>
+    <p>Explore curated plant products with intelligent recommendations, competitor price comparison and customer reviews.</p>
+    <form method="get" action="" style="margin-top:18px; max-width:520px;">
+        <input class="input-field" type="search" name="q" placeholder="Search plants, care tools, collections" value="{{ query }}">
+    </form>
+</div>
+
+<div class="category-filters">
+    <a href="{% url 'home' %}" class="filter-pill {% if not current_category %}active{% endif %}">All</a>
+    {% for cat in categories %}
+        <a href="{% url 'home' %}?category={{ cat }}" class="filter-pill {% if current_category == cat %}active{% endif %}">{{ cat }}</a>
+    {% endfor %}
+</div>
+
+<div class="products-grid">
+    {% for product in products %}
+        <div class="card">
+            <img src="{{ MEDIA_URL }}{{ product.image }}" alt="{{ product.name }}">
+            <div class="card-body">
+                <span class="badge">AI Score: {{ product.avg_rating|default:'4.8' }} ⭐</span>
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description|truncatechars:120 }}</p>
+                <p><strong>Price:</strong> ₹{{ product.price }}</p>
+                <p><em>{{ product.ai_reference|truncatechars:90 }}</em></p>
+            </div>
+            <div class="card-footer">
+                <a class="button-secondary" href="{% url 'product_detail' product.slug %}">View</a>
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'add_to_cart' product.slug %}" style="display:inline-block; margin:0;">
+                        {% csrf_token %}
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="button-primary">Add to Cart</button>
+                    </form>
+                {% else %}
+                    <a class="button-primary" href="{% url 'login' %}">Login to Buy</a>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <p>No products found. Try another search term or return later.</p>
+    {% endfor %}
+</div>
+{% endblock %}

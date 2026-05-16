@@ -1,0 +1,21 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Admin Dashboard | Oceanix{% endblock %}
+
+{% block content %}
+<div class="section-card">
+    <h2>Admin Control Panel</h2>
+    <p>Manage store inventory, monitor reviews, and keep your product catalog updated.</p>
+    <div style="display:flex; gap:18px; flex-wrap:wrap; margin-top:20px;">
+        <div class="section-card" style="flex:1; min-width:200px;">
+            <h3>Total Products</h3>
+            <p>{{ products }}</p>
+        </div>
+        <div class="section-card" style="flex:1; min-width:200px;">
+            <h3>Total Reviews</h3>
+            <p>{{ reviews }}</p>
+        </div>
+    </div>
+    <p>Use the Django admin at <a href="/admin/">/admin/</a> to update product details and manage users.</p>
+</div>
+{% endblock %}

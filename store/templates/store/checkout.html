@@ -1,0 +1,88 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Checkout | Oceanix{% endblock %}
+
+{% block content %}
+<div class="section-card">
+    <h2>Checkout</h2>
+    <div class="product-detail" style="grid-template-columns: 1fr;">
+        <div>
+            <h3>Order summary</h3>
+            {% for item in cart_items %}
+                <div class="review-item">
+                    <p><strong>{{ item.product.name }}</strong> x {{ item.quantity }}</p>
+                    <p>₹{{ item.total_price }}</p>
+                </div>
+            {% endfor %}
+            <div class="section-card" style="margin-top: 18px;">
+                <h3>Amount to pay</h3>
+                <p><strong>₹{{ total }}</strong></p>
+            </div>
+        </div>
+        <div>
+            <h3>Billing details</h3>
+            <form method="post" class="form-card">
+                {% csrf_token %}
+                {{ form.full_name }}
+                {{ form.email }}
+                {{ form.phone }}
+                {{ form.address }}
+                <button type="submit" class="button-primary">Create Order & Pay</button>
+            </form>
+        </div>
+    </div>
+    {% if payment_ready and order %}
+        <div class="section-card" style="margin-top: 24px;">
+            <h3>Complete payment</h3>
+            <p>Your order reference: <strong>#{{ order.id }}</strong></p>
+            <button id="rzp-button" class="button-primary">Pay with Razorpay</button>
+        </div>
+    {% endif %}
+</div>
+
+{% if payment_ready and order %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    const options = {
+        key: '{{ razorpay_key }}',
+        amount: '{{ order.amount|floatformat:2|cut:"." }}',
+        currency: 'INR',
+        name: 'Oceanix E-Commerce',
+        description: 'Order #{{ order.id }}',
+        order_id: '{{ razorpay_order_id }}',
+        handler: function (response) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{% url "payment_success" %}';
+            const csrfToken = '{{ csrf_token }}';
+            const hiddenCsrf = document.createElement('input');
+            hiddenCsrf.type = 'hidden';
+            hiddenCsrf.name = 'csrfmiddlewaretoken';
+            hiddenCsrf.value = csrfToken;
+            form.appendChild(hiddenCsrf);
+            ['razorpay_payment_id', 'razorpay_order_id', 'razorpay_signature'].forEach(function(name) {
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = name;
+                hidden.value = response[name];
+                form.appendChild(hidden);
+            });
+            document.body.appendChild(form);
+            form.submit();
+        },
+        prefill: {
+            name: '{{ form.full_name.value|default:request.user.username }}',
+            email: '{{ form.email.value|default:request.user.email }}',
+        },
+        theme: {
+            color: '#197b27'
+        }
+    };
+    const rzp = new Razorpay(options);
+    document.getElementById('rzp-button').onclick = function(e) {
+        e.preventDefault();
+        rzp.open();
+    };
+</script>
+{% endif %}
+{% endblock %}
